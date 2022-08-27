@@ -40,6 +40,7 @@ public final class Constants {
     public static final double k_Vlow = 28;
     public static final double k_Vhigh = 40;
 
+    public static final int gamePadPort = 0;
     public static final int accelerationAxis = 1;
     public static final int steeringAxis = 2;
 }

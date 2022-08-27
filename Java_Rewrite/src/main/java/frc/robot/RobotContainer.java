@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
+import java.util.function.DoubleSupplier;
 
 
 /**
@@ -19,11 +20,14 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final GenericHID m_driverpad1 = new GenericHID(0);
+  public final GenericHID m_driverpad1 = new GenericHID(Constants.gamePadPort);
+  private final DoubleSupplier driverPadAccel = () -> 
+    {return Drivetrain.NonLinear(-m_driverpad1.getRawAxis(Constants.accelerationAxis));};
+  private final DoubleSupplier driverPadSteer = () ->
+    {return Drivetrain.NonLinear(m_driverpad1.getRawAxis(Constants.steeringAxis));};
 
-  private final Drivetrain m_Subsystem = new Drivetrain(m_driverpad1);
-
-  private final TeleopDrive m_autoCommand = new TeleopDrive(m_Subsystem);
+  public final Drivetrain m_drivetrain = new Drivetrain();
+  public final TeleopDrive m_teleopDrive = new TeleopDrive(m_drivetrain, driverPadAccel, driverPadSteer);
 
   
 
@@ -41,15 +45,5 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
   }
 }

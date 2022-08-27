@@ -7,19 +7,24 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import java.util.function.DoubleSupplier;
 
 /** An example command that uses an example subsystem. */
 public class TeleopDrive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivetrain m_subsystem;
+  private final DoubleSupplier xSpeed;
+  private final DoubleSupplier zRotation;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public TeleopDrive(Drivetrain subsystem) {
+  public TeleopDrive(Drivetrain subsystem, DoubleSupplier xAxis, DoubleSupplier zAxis) {
     m_subsystem = subsystem;
+    xSpeed = xAxis;
+    zRotation = zAxis;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -28,8 +33,7 @@ public class TeleopDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.m_drive.arcadeDrive(Drivetrain.NonLinear(m_subsystem.m_controller.getRawAxis(Constants.accelerationAxis)), m_subsystem.m_controller.getRawAxis(Constants.steeringAxis));
-
+    m_subsystem.m_drive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble());
   }
 
 

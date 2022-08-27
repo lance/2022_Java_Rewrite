@@ -5,14 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-import java.lang.Math;  
+import java.lang.Math;
+import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
   //Initalize motor controllers
@@ -28,10 +28,7 @@ public class Drivetrain extends SubsystemBase {
   //Create Tank drive
   public final DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
-  public final GenericHID m_controller;
-
-  public Drivetrain(GenericHID controller) {
-    m_controller = controller;
+  public Drivetrain() {
     m_left.setInverted(Constants.leftInvert);
     m_right.setInverted(Constants.rightInvert);
 
