@@ -12,4 +12,34 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+
+    public static final int climberLeadId = 1;
+    public static final int climberFollowId = 2;
+    public static final int climberRotateId = 3;
+    public static final int stage1TalonId = 5;
+    public static final int stage2TalonId = 4;
+    public static final int stage3LeadSparkId = 6;
+    public static final int stage3FollowSparkId = 7;
+    public static final int leftFalconLeadId = 13;
+    public static final int leftFalconFollowId = 12;
+    public static final int rightFalconLeadId = 11;
+    public static final int rightFalconFollowId = 10;
+    public static final int compressorId = 8;
+    public static final int solenoidPort = 0;
+    
+    public static final boolean leftInvert = false;
+    public static final boolean rightInvert = true;
+
+    public static final double accelMod = .65; //Temp tuning enabled .7
+    public static final double accelRamp = 8; //Temp tuning enabled 8
+    public static final double turnMod = .3; //Temp tuning enabled .3
+    public static final double turnRamp = 20; //Temp tuning enabled 20
+    public static final double boost = 2; // 2
+    public static final double k_accelDis = 60000;
+    public static final double k_Vlow = 28;
+    public static final double k_Vhigh = 40;
+
+    public static final int accelerationAxis = 1;
+    public static final int steeringAxis = 2;
+}
