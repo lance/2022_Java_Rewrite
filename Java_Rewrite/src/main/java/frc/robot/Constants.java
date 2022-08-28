@@ -43,4 +43,6 @@ public final class Constants {
     public static final int gamePadPort = 0;
     public static final int accelerationAxis = 1;
     public static final int steeringAxis = 2;
+
+    public static final boolean[] motorConfigs = {true,false,false};
 }
