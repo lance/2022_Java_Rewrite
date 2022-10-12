@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -47,7 +46,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    CommandScheduler.getInstance().setDefaultCommand(m_robotContainer.m_drivetrain, m_robotContainer.m_teleopDrive);
+    //Schedule Teleop drive command
+    CommandScheduler.getInstance().schedule(m_robotContainer.m_teleopDrive);
   }
 
   @Override

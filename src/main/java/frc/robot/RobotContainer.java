@@ -4,12 +4,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj2.command.Command;
-import java.util.function.DoubleSupplier;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 
 /**
@@ -20,15 +17,13 @@ import java.util.function.DoubleSupplier;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final GenericHID m_driverpad1 = new GenericHID(Constants.gamePadPort);
-  private final DoubleSupplier driverPadAccel = () -> 
-    {return Drivetrain.NonLinear(-m_driverpad1.getRawAxis(Constants.accelerationAxis));};
-  private final DoubleSupplier driverPadSteer = () ->
-    {return Drivetrain.NonLinear(m_driverpad1.getRawAxis(Constants.steeringAxis));};
-
+  public final XboxController m_driverpad1 = new XboxController(Constants.primaryController);
   public final Drivetrain m_drivetrain = new Drivetrain();
-  public final TeleopDrive m_teleopDrive = new TeleopDrive(m_drivetrain, driverPadAccel, driverPadSteer);
 
+  public final RunCommand m_teleopDrive =  new RunCommand(() -> m_drivetrain.arcadeDrive(
+    -m_driverpad1.getLeftY(),
+    m_driverpad1.getRightX()),
+    m_drivetrain);
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -44,6 +39,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    
   }
 }

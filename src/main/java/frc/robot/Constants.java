@@ -13,6 +13,8 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final int primaryController = 0;
+
     public final class CanId{
         public static final int climberLiftLead = 1;
         public static final int climberLiftFollow = 2;
@@ -28,26 +30,22 @@ public final class Constants {
         public static final int compressor = 8;
         public static final int solenoidPort = 0;
     }
-    
-    
-    public static final boolean leftInvert = false;
-    public static final boolean rightInvert = true;
 
     public final class Drive{
-        public static final double accelMod = .65; //Temp tuning enabled .7
-        public static final double accelRamp = 8; //Temp tuning enabled 8
-        public static final double turnMod = .3; //Temp tuning enabled .3
-        public static final double turnRamp = 20; //Temp tuning enabled 20
-        public static final double boost = 2; // 2
-        public static final double k_accelDis = 60000;
-        public static final double k_Vlow = 28;
-        public static final double k_Vhigh = 40;
-    }
-    
-    public final class Gamepad{ 
-        public static final int gamePadPort = 0;
-        public static final int accelerationAxis = 1;
-        public static final int steeringAxis = 2;
+        public final class Feedforward{
+            public final class Left{
+                public static final double kS = 0;
+                public static final double kV = 0;
+                public static final double kA = 0;
+            }
+            public final class Right{
+                public static final double kS = 0;
+                public static final double kV = 0;
+                public static final double kA = 0;
+            }
+        }
+        public static final double kTrackWidth = 10;
+        public static final boolean kInvertDrive = false;
     }
 
     public static final boolean[] motorConfigs = {true,false,false};
