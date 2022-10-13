@@ -8,9 +8,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Climber extends SubsystemBase {
-    private final WPI_TalonSRX m_leadClimb = new WPI_TalonSRX(Constants.climberLeadId);
-    private final WPI_TalonSRX m_followClimb = new WPI_TalonSRX(Constants.climberFollowId);
-    private final WPI_TalonSRX m_rotate = new WPI_TalonSRX(Constants.climberRotateId);
+    private final WPI_TalonSRX m_leadClimb = new WPI_TalonSRX(Constants.CanId.climberLiftLead);
+    private final WPI_TalonSRX m_followClimb = new WPI_TalonSRX(Constants.CanId.climberLiftFollow);
+    private final WPI_TalonSRX m_rotate = new WPI_TalonSRX(Constants.CanId.climberRotate);
 
     public Climber(){
         m_leadClimb.setInverted(Constants.motorConfigs[0]);
