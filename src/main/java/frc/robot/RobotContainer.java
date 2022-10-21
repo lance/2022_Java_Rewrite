@@ -14,10 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.util.datalog.BooleanArrayLogEntry;
-
-import java.util.function.BooleanSupplier;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
