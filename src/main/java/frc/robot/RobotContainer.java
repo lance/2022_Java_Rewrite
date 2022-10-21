@@ -4,9 +4,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.datalog.BooleanArrayLogEntry;
+
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -17,14 +27,27 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final XboxController m_driverpad1 = new XboxController(Constants.primaryController);
+  public final XboxController m_driverController = new XboxController(Constants.primaryController);
+  public final Joystick m_leftStick = new Joystick(1);
+  public final Joystick m_rightStick = new Joystick(2);
   public final Drivetrain m_drivetrain = new Drivetrain();
 
-  public final RunCommand m_teleopDrive =  new RunCommand(() -> m_drivetrain.arcadeDrive(
-    -m_driverpad1.getLeftY(),
-    m_driverpad1.getRightX()),
+  public final RunCommand m_teleopArcadeDrive =  new RunCommand(() -> m_drivetrain.arcadeDrive(
+    Drivetrain.NonLinear(-m_driverController.getLeftY()),
+    Drivetrain.NonLinear(m_driverController.getRightX()),
+    m_driverController.getRightBumper()),
     m_drivetrain);
-  
+
+  public final RunCommand m_teleopTankDrive = new RunCommand(() -> m_drivetrain.tankDrive(
+    Drivetrain.NonLinear(-m_leftStick.getY()),
+    Drivetrain.NonLinear(-m_rightStick.getY()),
+    m_rightStick.getTrigger()),
+    m_drivetrain);
+
+  public ShuffleboardTab driveTrainTab = Shuffleboard.getTab("Drivetrain");
+  public NetworkTableEntry controlMode = driveTrainTab.add("Control Mode", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+
+  public final ConditionalCommand m_teleopDrive = new ConditionalCommand(m_teleopArcadeDrive, m_teleopTankDrive, () -> controlMode.getBoolean(true));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

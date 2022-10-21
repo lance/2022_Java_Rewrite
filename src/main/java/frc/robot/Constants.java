@@ -33,19 +33,29 @@ public final class Constants {
 
     public final class Drive{
         public final class Feedforward{
+            //Feedforwards from sysid
             public final class Left{
-                public static final double kS = 0;
-                public static final double kV = 0;
-                public static final double kA = 0;
+                public static final double kS = 0.56131;
+                public static final double kV = 2.065;
+                public static final double kA = 0.37539;
             }
             public final class Right{
-                public static final double kS = 0;
-                public static final double kV = 0;
-                public static final double kA = 0;
+                public static final double kS = 0.55809;
+                public static final double kV = 2.0644;
+                public static final double kA = 0.19512;
             }
         }
-        public static final double kTrackWidth = 10;
+        public static final double kTrackWidth = 1; // m/s
         public static final boolean kInvertDrive = false;
+
+        public final class Rate{
+            //Speeds in m/s rotations in rad/s
+            public static final double maxForwardSpeed = 5.25;
+            public static final double driverSpeed = 3;
+            public static final double driverRotate = 1;
+            public static final double driverForwardAccel = 2;
+            public static final double driverRotateAccel = 1;
+        }
     }
 
     public static final boolean[] motorConfigs = {true,false,false};

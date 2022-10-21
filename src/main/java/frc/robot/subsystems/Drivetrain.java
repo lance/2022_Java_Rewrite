@@ -14,6 +14,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 import java.lang.Math;
 import edu.wpi.first.math.MathUtil;
@@ -36,11 +37,8 @@ public class Drivetrain extends SubsystemBase {
   private SimpleMotorFeedforward m_rFeedforward = new SimpleMotorFeedforward(Constants.Drive.Feedforward.Right.kS, Constants.Drive.Feedforward.Right.kV, Constants.Drive.Feedforward.Right.kA);
   private DifferentialDriveKinematics m_driveKinematics = new DifferentialDriveKinematics(Constants.Drive.kTrackWidth);
 
-  //TODO devise strategy for determining max wheel speed
-  private final double k_maxLeftSpeed = 10; // m/s
-  private final double k_maxRightSpeed = 10; // m/s
-  private final double k_maxForwardSpeed = 10; // m/s
-  private final double k_maxAngularSpeed = Math.PI / 5; // rad/s
+  private SlewRateLimiter m_accelLimiter = new SlewRateLimiter(Constants.Drive.Rate.driverForwardAccel);
+  private SlewRateLimiter m_rotateLimiter = new SlewRateLimiter(Constants.Drive.Rate.driverRotateAccel);
 
 
   //Constructor taking no arguments, all relevant values are defined in Constants.java
@@ -61,28 +59,62 @@ public class Drivetrain extends SubsystemBase {
     m_leftFollow.setNeutralMode(nMode);
   }
 
+  //Sets the SlewRateLimiter accelration limits on 
+  public void setAccelLimits(double forward, double rotate){
+    m_accelLimiter = new SlewRateLimiter(forward);
+    m_rotateLimiter = new SlewRateLimiter(rotate);
+  }
+
+  public void setAccelLimits(double forward, double rotate, double forwardInit, double rotateInit){
+    m_accelLimiter = new SlewRateLimiter(forward, forwardInit);
+    m_rotateLimiter = new SlewRateLimiter(rotate, rotateInit);
+  }
+
+  public void resetForwardLimiter(double value){
+    m_accelLimiter.reset(value);
+  }
+
+  public void resetRotateLimiter(double value){
+    m_rotateLimiter.reset(value);
+  }
+
   //Class takes two values [-1 to 1] for the desired speed on each side of the robot and  calls driveWheelSpeeds with the calculated and conditioned values
-  public void tankDrive(double leftSpeed, double rightSpeed){
-    //Apply NonLinear mapping
-    leftSpeed = NonLinear(leftSpeed);
-    rightSpeed = NonLinear(rightSpeed);
+  public void tankDrive(double leftSpeed, double rightSpeed, boolean boost){
     //Limit values to desired range
     leftSpeed = MathUtil.clamp(leftSpeed, -1, 1);
     rightSpeed = MathUtil.clamp(rightSpeed, -1, 1);
+    
+    double leftDriveSpeed = leftSpeed * (boost ? Constants.Drive.Rate.maxForwardSpeed : Constants.Drive.Rate.driverSpeed);
+    double rightDriveSpeed = rightSpeed * (boost ? Constants.Drive.Rate.maxForwardSpeed : Constants.Drive.Rate.driverSpeed);
 
-    driveWheelSpeeds(new DifferentialDriveWheelSpeeds(leftSpeed * k_maxLeftSpeed, rightSpeed * k_maxRightSpeed));
+    driveWheelSpeeds(new DifferentialDriveWheelSpeeds(leftDriveSpeed, rightDriveSpeed));
+  }
+
+  public void tankDrive(double leftSpeed, double rightSpeed){
+    tankDrive(leftSpeed, rightSpeed, false);
   }
 
   //Takes two values [-1 to 1] for linear speed and angular rotation and calls driveChassisSpeeds with the calculated and conditioned values
-  public void arcadeDrive(double xSpeed, double zRotation){
-    //Apply NonLinear mapping
-    xSpeed = NonLinear(xSpeed);
-    zRotation = NonLinear(zRotation);
+  public void arcadeDrive(double xSpeed, double zRotation, boolean boost, boolean rateLimit){
     //Limit values to desired range
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
     zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
 
-    driveChassisSpeeds(new ChassisSpeeds(xSpeed * k_maxForwardSpeed, 0, zRotation * k_maxAngularSpeed));
+    //Calculate the linear and rotation speeds requested by the inputs using either the boost(max) range, or the driver range
+    double linearSpeed = xSpeed * (boost ? Constants.Drive.Rate.maxForwardSpeed : Constants.Drive.Rate.driverSpeed);
+    double rotateSpeed = zRotation * Constants.Drive.Rate.driverRotate;
+
+    if (rateLimit) driveChassisSpeeds(new ChassisSpeeds(m_accelLimiter.calculate(linearSpeed), 0, m_rotateLimiter.calculate(rotateSpeed)));
+    else driveChassisSpeeds(new ChassisSpeeds(linearSpeed, 0, rotateSpeed));
+  }
+
+  //Arcade drive overloads for default parameters
+  public void arcadeDrive(double xSpeed, double zRotation){
+    arcadeDrive(xSpeed, zRotation, false, true);
+  }
+
+  public void arcadeDrive(double xSpeed, double zRotation, boolean boost){
+    arcadeDrive(xSpeed, zRotation, boost, true);
   }
 
   //Set the appropriate motor voltages for a desired set of wheel speeds
