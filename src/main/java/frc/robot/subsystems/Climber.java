@@ -23,11 +23,11 @@ public class Climber extends SubsystemBase {
 
     }
 
-    void rotate(double rate){
+    public void rotate(double rate){
         m_rotate.set(ControlMode.PercentOutput, rate);
     }
     
-    void climb(double rate){
+    public void climb(double rate){
         m_leadClimb.set(ControlMode.PercentOutput, rate);
     }
     
